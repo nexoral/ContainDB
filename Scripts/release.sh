@@ -15,8 +15,9 @@ echo "🔨 Binary Building completed of $APP_NAME version $VERSION for $ARCH"
 ./Scripts/PackageBuilder.sh
 echo "📦 Package Building completed of $APP_NAME version $VERSION for $ARCH"
 
-# collect all debs for this version
-DEB_FILES=(./Packages/${APP_NAME}_${VERSION}_*) # to collect all files
+# collect all packages from dist folder for this version
+DIST_FOLDER="$HOME/dist"
+DEB_FILES=("${DIST_FOLDER}"/${APP_NAME}_${VERSION}_*) # to collect all files
 
 TAG="v$VERSION"
 COMMIT_HASH=$(git rev-parse HEAD)
@@ -32,9 +33,9 @@ if [ ! -f "$VERSION_FILE" ]; then
   exit 1
 fi
 
-# ensure we have at least one .deb
+# ensure we have at least one package file
 if [ ${#DEB_FILES[@]} -eq 0 ]; then
-  echo "❌ No .deb files found for version $VERSION in Packages/"
+  echo "❌ No package files found for version $VERSION in $DIST_FOLDER"
   exit 1
 fi
 
