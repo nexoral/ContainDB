@@ -7,7 +7,7 @@ APP_NAME="containdb"
 AVAILABLE_OPTIONS=("amd64" "arm64" "i386")
 BINARY_PATH="./bin/ContainDB" # Path to your Go binary
 VERSION_FILE="./VERSION"
-DIST_FOLDER="$HOME/dist"
+DIST_FOLDER="./dist"
 
 # === Get version from VERSION file ===
 if [ -f "$VERSION_FILE" ]; then
@@ -32,6 +32,8 @@ else
   echo "✅ xpack already installed"
 fi
 
+# === Clean up old dist folder ===
+rm -rf "$DIST_FOLDER"
 
 # === Build packages for each architecture using xpack ===
 for ARCH in "${AVAILABLE_OPTIONS[@]}"; do

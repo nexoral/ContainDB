@@ -16,7 +16,7 @@ echo "🔨 Binary Building completed of $APP_NAME version $VERSION for $ARCH"
 echo "📦 Package Building completed of $APP_NAME version $VERSION for $ARCH"
 
 # collect all packages from dist folder for this version
-DIST_FOLDER="$HOME/dist"
+DIST_FOLDER="./dist"
 DEB_FILES=("${DIST_FOLDER}"/${APP_NAME}_${VERSION}_*) # to collect all files
 
 TAG="v$VERSION"
