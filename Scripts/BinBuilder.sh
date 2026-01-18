@@ -51,7 +51,6 @@ cp "${BUILD_OUTPUT_DIR}/containdb_windows_amd64.exe" "$NPM_BIN_DIR/"
 echo "Copying metadata to npm package..."
 cp "README.md" "./npm/"
 cp "LICENSE" "./npm/"
-cp "VERSION" "./npm/"
 
 echo "Build complete. Binaries available in $BUILD_OUTPUT_DIR and $NPM_BIN_DIR"
 
