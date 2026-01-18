@@ -1,6 +1,6 @@
 {
   "name": "containdb",
-  "version": "1.0.0",
+  "version": "5.15.36",
   "description": "ContainDB CLI - A tool for managing Docker databases",
   "bin": {
     "containdb": "./InstallController.js"

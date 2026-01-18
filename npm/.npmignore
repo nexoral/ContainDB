@@ -1,10 +1,12 @@
-# Ignore everything by default
-*
 
-# Allow necessary files
-!package.json
-!InstallController.js
-!bin/
-!README.md
-!LICENSE
-!VERSION
+# Ignore common development files
+node_modules/
+.DS_Store
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.git/
+.gitignore
+
+# We explicitly want to include everything else in this folder

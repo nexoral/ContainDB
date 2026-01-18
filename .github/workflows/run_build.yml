@@ -20,3 +20,31 @@ jobs:
         run: |
           chmod +x ./Scripts/release.sh
           ./Scripts/release.sh
+
+  publish_to_npm:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Ensure npm latest
+        run: npm install -g npm@latest
+
+      - name: Build binaries
+        run: |
+          chmod +x ./Scripts/BinBuilder.sh
+          ./Scripts/BinBuilder.sh
+
+      - name: Publish to NPM Registry
+        run: |
+          cd npm
+          npm publish --access public
