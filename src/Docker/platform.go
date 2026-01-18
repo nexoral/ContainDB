@@ -5,7 +5,6 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
-	"strings"
 )
 
 // IsAdmin checks if the program is running with administrator/root privileges
