@@ -28,7 +28,10 @@ if (!supported[platform] || !supported[platform][arch]) {
 const binaryName = supported[platform][arch];
 const binaryPath = path.join(__dirname, 'bin', binaryName);
 
-const child = spawn(binaryPath, process.argv.slice(2), { stdio: 'inherit' });
+// Copy existing environment and add our custom flag
+const env = { ...process.env, CONTAINDB_INSTALL_SOURCE: 'npm' };
+
+const child = spawn(binaryPath, process.argv.slice(2), { stdio: 'inherit', env });
 
 child.on('exit', (code) => {
   process.exit(code);
