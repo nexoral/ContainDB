@@ -1,0 +1,22 @@
+{
+  "name": "containdb",
+  "version": "5.15.36",
+  "description": "ContainDB CLI - A tool for managing Docker databases",
+  "bin": {
+    "containdb": "./InstallController.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ankan",
+  "license": "MIT",
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ]
+}
