@@ -6,7 +6,7 @@ on:
       - main  # Only trigger on push to main branch
 
 jobs:
-  run-script:
+  publish_to_github:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,6 +22,7 @@ jobs:
           ./Scripts/release.sh
 
   publish_to_npm:
+    needs: publish_to_github
     runs-on: ubuntu-latest
     permissions:
       contents: read
