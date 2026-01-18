@@ -1,0 +1,10 @@
+# Ignore everything by default
+*
+
+# Allow necessary files
+!package.json
+!InstallController.js
+!bin/
+!README.md
+!LICENSE
+!VERSION
