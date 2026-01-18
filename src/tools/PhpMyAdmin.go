@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/manifoldco/promptui"
 )
@@ -58,13 +59,19 @@ func StartPHPMyAdmin() {
 	cmd.Stderr = os.Stderr
 	_ = cmd.Run()
 
-	runCmd := fmt.Sprintf(
-		"docker run -d --restart unless-stopped --network ContainDB-Network --name phpmyadmin -e PMA_HOST=%s -p %s:80 phpmyadmin/phpmyadmin",
-		selectedContainer, port,
-	)
+	// Build docker run command as args array
+	args := []string{
+		"run", "-d",
+		"--restart", "unless-stopped",
+		"--network", "ContainDB-Network",
+		"--name", "phpmyadmin",
+		"-e", fmt.Sprintf("PMA_HOST=%s", selectedContainer),
+		"-p", fmt.Sprintf("%s:80", port),
+		"phpmyadmin/phpmyadmin",
+	}
 
-	fmt.Println("Running:", runCmd)
-	cmd = exec.Command("bash", "-c", runCmd)
+	fmt.Println("Running: docker", strings.Join(args, " "))
+	cmd = exec.Command("docker", args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {

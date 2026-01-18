@@ -23,9 +23,10 @@ func DockerStarter() {
 		err = Docker.InstallDocker()
 		if err != nil {
 			fmt.Println("Failed to install Docker:", err)
-			return
+			os.Exit(1)
 		}
 		fmt.Println("Docker installed successfully! Please restart the terminal or log out & log in again.")
-		return
+		os.Exit(0) // Exit to ensure user restarts terminal/logs out (or at least stops here)
+
 	}
 }

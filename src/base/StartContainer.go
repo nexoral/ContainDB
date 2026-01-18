@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/manifoldco/promptui"
 )
@@ -126,12 +127,38 @@ func StartContainer(database string) {
 	}
 
 	containerName := fmt.Sprintf("%s-container", database)
-	runCmd := fmt.Sprintf(
-		"docker run -d --network ContainDB-Network %s %s %s %s --name %s %s",
-		portMapping, restartFlag, volumeMapping, env, containerName, image,
-	)
-	fmt.Println("Running:", runCmd)
-	cmd = exec.Command("bash", "-c", runCmd)
+	
+	// Build docker run command as args array instead of string
+	args := []string{"run", "-d", "--network", "ContainDB-Network"}
+	
+	// Add port mapping if specified
+	if portMapping != "" {
+		portParts := strings.Fields(portMapping)
+		args = append(args, portParts...)
+	}
+	
+	// Add restart flag if specified
+	if restartFlag != "" {
+		restartParts := strings.Fields(restartFlag)
+		args = append(args, restartParts...)
+	}
+	
+	// Add volume mapping if specified
+	if volumeMapping != "" {
+		volumeParts := strings.Fields(volumeMapping)
+		args = append(args, volumeParts...)
+	}
+	
+	// Add environment variables if specified
+	if env != "" {
+		envParts := strings.Fields(env)
+		args = append(args, envParts...)
+	}
+	
+	args = append(args, "--name", containerName, image)
+	
+	fmt.Println("Running: docker", strings.Join(args, " "))
+	cmd = exec.Command("docker", args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
