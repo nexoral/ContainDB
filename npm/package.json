@@ -1,10 +1,11 @@
 {
   "name": "containdb",
-  "version": "5.15.37",
+  "version": "5.16.37",
   "description": "The Ultimate Docker Database Manager. Automate the creation, management, and monitoring of containerized databases (MongoDB, MySQL, PostgreSQL, Redis) and their GUI tools (Compass, phpMyAdmin, PgAdmin, RedisInsight) with a simple CLI. No complex Docker commands—just productivity.",
   "bin": {
     "containdb": "./InstallController.js"
   },
+  "preferGlobal": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
