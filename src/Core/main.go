@@ -6,13 +6,12 @@ import (
 	"ContainDB/src/tools"
 	"fmt"
 	"os"
-	"os/exec"
 	"os/signal"
-	"strings"
+	"runtime"
 )
 
 func main() {
-	VERSION := "5.14.35-stable"
+	VERSION := "5.15.35-stable"
 
 	// handle version flag without requiring sudo
 	if len(os.Args) > 1 && os.Args[1] == "--version" {
@@ -20,7 +19,11 @@ func main() {
 		return
 	} else if len(os.Args) > 1 && os.Args[1] == "--help" {
 		fmt.Println("ContainDB CLI - A tool for managing Docker databases")
-		fmt.Println("Usage: sudo containdb")
+		if runtime.GOOS != "windows" {
+			fmt.Println("Usage: sudo containdb")
+		} else {
+			fmt.Println("Usage: containdb (run as Administrator)")
+		}
 		fmt.Println("Options:")
 		fmt.Println("  --version   Show version information")
 		fmt.Println("  --help             Show this help message")
@@ -53,30 +56,23 @@ func main() {
 		os.Exit(1)
 	}()
 
-	// require sudo
-	if os.Geteuid() != 0 {
-		fmt.Println("❌ Please run this program with sudo")
+	// Check OS support
+	if err := Docker.CheckOSSupport(); err != nil {
+		fmt.Printf("❌ %v\n", err)
 		os.Exit(1)
 	}
 
-	// Check if running on Ubuntu or Debian-based system
-	osReleaseBytes, err := os.ReadFile("/etc/os-release")
-	if err != nil {
-		fmt.Println("❌ Unable to determine OS distribution")
-		os.Exit(1)
-	}
-	osRelease := string(osReleaseBytes)
-	if !strings.Contains(strings.ToLower(osRelease), "ubuntu") &&
-		!strings.Contains(strings.ToLower(osRelease), "debian") {
-		fmt.Println("❌ This program requires Ubuntu or Debian-based system")
-		os.Exit(1)
-	}
-
-	// Check if bash shell is available
-	_, err = exec.LookPath("bash")
-	if err != nil {
-		fmt.Println("❌ bash shell not found. This program requires bash to be installed")
-		os.Exit(1)
+	// Check for admin/root privileges (only on Linux, optional on Windows/macOS for Docker)
+	if runtime.GOOS == "linux" {
+		if !Docker.IsAdmin() {
+			fmt.Println("❌ Please run this program with sudo (Linux requires root for Docker)")
+			os.Exit(1)
+		}
+	} else if runtime.GOOS == "windows" {
+		if !Docker.IsAdmin() {
+			fmt.Println("⚠️  Warning: Not running as Administrator. Docker may require admin privileges.")
+			fmt.Println("   Continuing anyway...")
+		}
 	}
 
 	// Check if Docker is installed and if not, prompt to install it
@@ -87,7 +83,7 @@ func main() {
 
 	errs := Docker.CreateDockerNetworkIfNotExists()
 	if errs != nil {
-		fmt.Println("Failed to create Docker network:", err)
+		fmt.Println("Failed to create Docker network:", errs)
 		return
 	}
 

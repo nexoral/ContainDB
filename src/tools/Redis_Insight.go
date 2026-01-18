@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/manifoldco/promptui"
 )
@@ -59,13 +60,18 @@ func StartRedisInsight() {
 	cmd.Stderr = os.Stderr
 	_ = cmd.Run()
 
-	runCmd := fmt.Sprintf(
-		"docker run -d --restart unless-stopped --network ContainDB-Network --name redisinsight -p %s:5540 redis/redisinsight:latest",
-		port,
-	)
+	// Build docker run command as args array
+	args := []string{
+		"run", "-d",
+		"--restart", "unless-stopped",
+		"--network", "ContainDB-Network",
+		"--name", "redisinsight",
+		"-p", fmt.Sprintf("%s:5540", port),
+		"redis/redisinsight:latest",
+	}
 
-	fmt.Println("Running:", runCmd)
-	cmd = exec.Command("bash", "-c", runCmd)
+	fmt.Println("Running: docker", strings.Join(args, " "))
+	cmd = exec.Command("docker", args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {

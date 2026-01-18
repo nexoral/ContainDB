@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"runtime"
 
 	"github.com/manifoldco/promptui"
 )
@@ -225,12 +226,20 @@ func BaseCaseHandler() {
 	// Handle update case
 	case "Update ContainDB":
 		fmt.Println("Checking for ContainDB updates...")
-		command := exec.Command("bash", "-c", "curl -fsSL https://raw.githubusercontent.com/nexoral/ContainDB/main/Scripts/installer.sh | sudo bash -")
-		command.Stdout = os.Stdout
-		command.Stderr = os.Stderr
-		if err := command.Run(); err != nil {
-			fmt.Println("Error updating ContainDB:", err)
-			return
+		fmt.Println("⚠️  Automatic update via installer script is currently only supported on Linux.")
+		fmt.Println("For Windows and macOS, please update manually:")
+		fmt.Println("  - Download the latest release from: https://github.com/nexoral/ContainDB/releases")
+		fmt.Println("  - Or check the installation instructions in the README")
+		
+		if runtime.GOOS == "linux" {
+			// On Linux, use the installer script
+			command := exec.Command("bash", "-c", "curl -fsSL https://raw.githubusercontent.com/nexoral/ContainDB/main/Scripts/installer.sh | sudo bash -")
+			command.Stdout = os.Stdout
+			command.Stderr = os.Stderr
+			if err := command.Run(); err != nil {
+				fmt.Println("Error updating ContainDB:", err)
+				return
+			}
 		}
 
 	// Handle exit case

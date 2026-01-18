@@ -31,9 +31,9 @@ func AskYesNo(label string) bool {
 func IsContainerRunning(nameOrImage string, checkByName bool) bool {
 	var cmd *exec.Cmd
 	if checkByName {
-		cmd = exec.Command("bash", "-c", fmt.Sprintf("docker ps --filter name=%s --format '{{.Names}}'", nameOrImage))
+		cmd = exec.Command("docker", "ps", "--filter", fmt.Sprintf("name=%s", nameOrImage), "--format", "{{.Names}}")
 	} else {
-		cmd = exec.Command("bash", "-c", fmt.Sprintf("docker ps --filter ancestor=%s --format '{{.Names}}'", nameOrImage))
+		cmd = exec.Command("docker", "ps", "--filter", fmt.Sprintf("ancestor=%s", nameOrImage), "--format", "{{.Names}}")
 	}
 	output, _ := cmd.Output()
 	return strings.TrimSpace(string(output)) != ""
@@ -44,22 +44,36 @@ func ListOfContainers(images []string) []string {
 		return []string{}
 	}
 
-	// Build grep pattern from image names (e.g., "mysql|postgres|mongo")
-	pattern := strings.Join(images, "|")
-
-	// Construct command
-	cmd := exec.Command("bash", "-c", fmt.Sprintf("docker ps --format '{{.Names}} {{.Image}}' | grep -E '%s'", pattern))
+	// Get all running containers with their names and images
+	cmd := exec.Command("docker", "ps", "--format", "{{.Names}} {{.Image}}")
 	output, err := cmd.Output()
 	if err != nil {
-		// If grep fails (e.g., no match), return empty list
 		return []string{}
 	}
 
+	// Filter containers by matching image names
 	lines := strings.Split(strings.TrimSpace(string(output)), "\n")
 	var containers []string
+	imageMap := make(map[string]bool)
+	for _, img := range images {
+		imageMap[img] = true
+	}
+
 	for _, line := range lines {
-		if parts := strings.Fields(line); len(parts) > 0 {
-			containers = append(containers, parts[0])
+		if line == "" {
+			continue
+		}
+		parts := strings.Fields(line)
+		if len(parts) >= 2 {
+			containerName := parts[0]
+			containerImage := parts[1]
+			// Check if any of the target images match
+			for img := range imageMap {
+				if strings.Contains(containerImage, img) {
+					containers = append(containers, containerName)
+					break
+				}
+			}
 		}
 	}
 	return containers
