@@ -1,4 +1,4 @@
-package Docker;
+package Docker
 
 import (
 	"os"

@@ -1,63 +1,82 @@
 package tools
 
 import (
+	"ContainDB/src/Docker"
 	"fmt"
+	"io"
+	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
+	"runtime"
 )
 
 func DownloadMongoDBCompass() {
+	// MongoDB Compass installation is only supported on Linux
+	if runtime.GOOS != "linux" {
+		fmt.Println("⚠️  MongoDB Compass GUI installation is currently only supported on Linux.")
+		fmt.Println("Please download MongoDB Compass manually for your platform:")
+		
+		switch runtime.GOOS {
+		case "windows":
+			fmt.Println("Windows: Download from https://www.mongodb.com/try/download/compass")
+		case "darwin":
+			fmt.Println("macOS: Download from https://www.mongodb.com/try/download/compass or use Homebrew: brew install mongodb-compass")
+		}
+		return
+	}
+
 	fmt.Println("Downloading MongoDB Compass...")
+	
+	downloadURL := "https://downloads.mongodb.com/compass/mongodb-compass_1.46.2_amd64.deb"
+	tempDir := Docker.GetTempDir()
+	debPath := filepath.Join(tempDir, "mongodb-compass.deb")
 
-	// Download with progress display using wget with progress bar
-	cmd := exec.Command("bash", "-c", "wget https://downloads.mongodb.com/compass/mongodb-compass_1.46.2_amd64.deb -O /tmp/mongodb-compass.deb --progress=bar:force 2>&1")
-
-	// Create a pipe to capture and process the output
-	stdout, err := cmd.StdoutPipe()
+	// Download using Go HTTP client (cross-platform)
+	fmt.Println("Downloading from:", downloadURL)
+	resp, err := http.Get(downloadURL)
 	if err != nil {
-		fmt.Println("Error creating stdout pipe:", err)
+		fmt.Printf("Error downloading MongoDB Compass: %v\n", err)
+		fmt.Println("Please download it manually from: https://www.mongodb.com/try/download/compass")
+		return
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		fmt.Printf("Error downloading MongoDB Compass: HTTP %d\n", resp.StatusCode)
 		return
 	}
 
-	cmd.Stderr = cmd.Stdout
+	// Create the file
+	out, err := os.Create(debPath)
+	if err != nil {
+		fmt.Printf("Error creating file: %v\n", err)
+		return
+	}
+	defer out.Close()
 
-	if err := cmd.Start(); err != nil {
-		fmt.Println("Error starting download:", err)
+	// Write the body to file
+	_, err = io.Copy(out, resp.Body)
+	if err != nil {
+		fmt.Printf("Error writing file: %v\n", err)
 		return
 	}
 
-	// Read and display progress output
-	buf := make([]byte, 100)
-	for {
-		n, err := stdout.Read(buf)
-		if n > 0 {
-			fmt.Print(string(buf[:n]))
-		}
-		if err != nil {
-			break
-		}
-	}
+	fmt.Println("Download completed:", debPath)
 
-	if err := cmd.Wait(); err != nil {
-		fmt.Println("Error downloading MongoDB Compass:", err)
-		return
-	}
-
-	// Install the downloaded deb file
-	installCmd := exec.Command("sudo", "dpkg", "-i", "/tmp/mongodb-compass.deb")
+	// Install the downloaded deb file (Linux only)
+	installCmd := exec.Command("sudo", "dpkg", "-i", debPath)
 	installCmd.Stdout = os.Stdout
 	installCmd.Stderr = os.Stderr
 	if err := installCmd.Run(); err != nil {
-		fmt.Println("Error installing MongoDB Compass:", err)
+		fmt.Printf("Error installing MongoDB Compass: %v\n", err)
+		fmt.Println("You may need to install dependencies. Try: sudo apt-get install -f")
 	} else {
 		fmt.Println("MongoDB Compass downloaded and installed successfully.")
 
 		// Clean up the downloaded file
-		cleanupCmd := exec.Command("rm", "/tmp/mongodb-compass.deb")
-		cleanupCmd.Stdout = os.Stdout
-		cleanupCmd.Stderr = os.Stderr
-		if err := cleanupCmd.Run(); err != nil {
-			fmt.Println("Error cleaning up downloaded file:", err)
+		if err := os.Remove(debPath); err != nil {
+			fmt.Printf("Error cleaning up downloaded file: %v\n", err)
 		} else {
 			fmt.Println("Temporary files cleaned up successfully.")
 		}

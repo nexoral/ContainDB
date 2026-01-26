@@ -126,3 +126,8 @@ echo "Updated LEARN.md with new version in installation URLs."
 installer_file="$(dirname "$0")/../Scripts/installer.sh"
 sed -i "s|^\(VERSION=\"\)[^\"']*\(\".*\)$|\1${new_version}-${suffix}\2|" "$installer_file"
 echo "Updated installer.sh with new version."
+
+# Update version in npm/package.json
+package_json="$(dirname "$0")/../npm/package.json"
+sed -i "s/\"version\": \".*\"/\"version\": \"${new_version}\"/" "$package_json"
+echo "Updated npm/package.json with new version."
