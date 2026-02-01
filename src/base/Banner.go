@@ -2,12 +2,32 @@ package base
 
 import (
 	"fmt"
+	"os/exec"
 	"strings"
 
 	"github.com/fatih/color"
 )
 
-const Version = "5.14.39-stable"
+const Version = "6.16.41-stable"
+
+// GetInstallationMethod detects how ContainDB was installed
+func GetInstallationMethod() string {
+	// Check if installed via dpkg (Debian package)
+	cmd := exec.Command("dpkg", "-s", "containdb")
+	if err := cmd.Run(); err == nil {
+		return "Debian Package (.deb)"
+	}
+
+	// Check if installed via npm
+	cmd = exec.Command("npm", "list", "-g", "containdb")
+	output, err := cmd.CombinedOutput()
+	if err == nil && strings.Contains(string(output), "containdb") {
+		return "NPM Package"
+	}
+
+	// Default to manual installation
+	return "Manual Installation"
+}
 
 func ShowBanner() {
 	// Define styles
@@ -44,8 +64,12 @@ func ShowBanner() {
 	fmt.Printf("%s\n", boldWhite("🛠️  Welcome to ")+boldGreen("ContainDB")+boldWhite(" - Containerized Database Manager CLI"))
 	fmt.Println(border)
 
+	// Get installation method
+	installMethod := GetInstallationMethod()
+
 	// Info Block
 	fmt.Printf("%s %s\n", boldCyan("📦 Version:"), white(Version))
+	fmt.Printf("%s %s\n", boldCyan("📥 Installed via:"), white(installMethod))
 	fmt.Printf("%s %s\n", boldCyan("👨‍💻 Author:"), white("Ankan Saha"))
 	fmt.Printf("%s %s\n", boldCyan("🔗 GitHub:"), cyan("https://github.com/nexoral/ContainDB"))
 	fmt.Printf("%s %s\n", boldCyan("💖 Sponsor:"), cyan("https://github.com/sponsors/AnkanSaha"))
