@@ -12,7 +12,8 @@
   
   ![License](https://img.shields.io/badge/license-MIT-green)
   ![Go Version](https://img.shields.io/badge/go-%3E%3D1.18-blue)
-  ![Platform](https://img.shields.io/badge/platform-linux-lightgrey)
+  ![Platform](https://img.shields.io/badge/platform-linux%20%7C%20macos%20%7C%20windows-lightgrey)
+  ![npm](https://img.shields.io/badge/available%20via-npm-red)
 </div>
 
 ## The Problem ContainDB Solves

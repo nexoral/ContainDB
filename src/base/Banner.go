@@ -2,12 +2,14 @@ package base
 
 import (
 	"fmt"
+	"os"
+	"runtime"
 	"strings"
 
 	"github.com/fatih/color"
 )
 
-const Version = "6.15.41-stable"
+const Version = "6.16.41-stable"
 
 func ShowBanner() {
 	// Define styles
@@ -44,8 +46,18 @@ func ShowBanner() {
 	fmt.Printf("%s\n", boldWhite("🛠️  Welcome to ")+boldGreen("ContainDB")+boldWhite(" - Containerized Database Manager CLI"))
 	fmt.Println(border)
 
+	// Detect installation method using environment variable and runtime info
+	installMethod := "Manual Installation"
+	installSource := os.Getenv("CONTAINDB_INSTALL_SOURCE")
+	if installSource == "npm" {
+		installMethod = "NPM Package"
+	} else if runtime.GOOS == "linux" {
+		installMethod = "Linux Script/Package"
+	}
+
 	// Info Block
 	fmt.Printf("%s %s\n", boldCyan("📦 Version:"), white(Version))
+	fmt.Printf("%s %s\n", boldCyan("📥 Installed via:"), white(installMethod))
 	fmt.Printf("%s %s\n", boldCyan("👨‍💻 Author:"), white("Ankan Saha"))
 	fmt.Printf("%s %s\n", boldCyan("🔗 GitHub:"), cyan("https://github.com/nexoral/ContainDB"))
 	fmt.Printf("%s %s\n", boldCyan("💖 Sponsor:"), cyan("https://github.com/sponsors/AnkanSaha"))

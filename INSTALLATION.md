@@ -19,10 +19,10 @@ This is the simplest method for Debian-based systems like Ubuntu, Debian, Linux 
 
 ```bash
 # Download the latest .deb release
-wget https://github.com/nexoral/ContainDB/releases/download/v6.15.41-stable/containDB_6.15.41-stable_amd64.deb
+wget https://github.com/nexoral/ContainDB/releases/download/v6.16.41-stable/containDB_6.16.41-stable_amd64.deb
 
 # Install the package
-sudo dpkg -i containDB_6.15.41-stable_amd64.deb
+sudo dpkg -i containDB_6.16.41-stable_amd64.deb
 
 # If you see dependency errors, run:
 sudo apt-get install -f
