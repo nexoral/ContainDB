@@ -2,32 +2,14 @@ package base
 
 import (
 	"fmt"
-	"os/exec"
+	"os"
+	"runtime"
 	"strings"
 
 	"github.com/fatih/color"
 )
 
 const Version = "6.16.41-stable"
-
-// GetInstallationMethod detects how ContainDB was installed
-func GetInstallationMethod() string {
-	// Check if installed via dpkg (Debian package)
-	cmd := exec.Command("dpkg", "-s", "containdb")
-	if err := cmd.Run(); err == nil {
-		return "Debian Package (.deb)"
-	}
-
-	// Check if installed via npm
-	cmd = exec.Command("npm", "list", "-g", "containdb")
-	output, err := cmd.CombinedOutput()
-	if err == nil && strings.Contains(string(output), "containdb") {
-		return "NPM Package"
-	}
-
-	// Default to manual installation
-	return "Manual Installation"
-}
 
 func ShowBanner() {
 	// Define styles
@@ -64,8 +46,14 @@ func ShowBanner() {
 	fmt.Printf("%s\n", boldWhite("🛠️  Welcome to ")+boldGreen("ContainDB")+boldWhite(" - Containerized Database Manager CLI"))
 	fmt.Println(border)
 
-	// Get installation method
-	installMethod := GetInstallationMethod()
+	// Detect installation method using environment variable and runtime info
+	installMethod := "Manual Installation"
+	installSource := os.Getenv("CONTAINDB_INSTALL_SOURCE")
+	if installSource == "npm" {
+		installMethod = "NPM Package"
+	} else if runtime.GOOS == "linux" {
+		installMethod = "Linux Script/Package"
+	}
 
 	// Info Block
 	fmt.Printf("%s %s\n", boldCyan("📦 Version:"), white(Version))

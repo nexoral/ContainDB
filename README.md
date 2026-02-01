@@ -52,14 +52,31 @@ ContainDB is an open-source CLI tool that automates the creation, management, an
 
 ## Installation
 
-### Option 1: Using the Debian Package (Recommended)
+### Option 1: For Windows & macOS (Recommended)
+
+Since these platforms usually have Node.js installed, this is the easiest way:
+
+```bash
+npm install -g containdb
+```
+
+### Option 2: For Linux (Recommended)
+
+Use our automated installer script:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/nexoral/ContainDB/main/Scripts/installer.sh | sudo bash -
-
 ```
 
-### Option 2: Build from Source
+### Option 3: Alternative (Any OS)
+
+If you have Node.js installed, you can install ContainDB anywhere:
+
+```bash
+npm install -g containdb
+```
+
+### Option 4: Build from Source
 
 ```bash
 # Clone the repository

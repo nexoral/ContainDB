@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"runtime"
 
 	"github.com/manifoldco/promptui"
 )
@@ -225,12 +226,39 @@ func BaseCaseHandler() {
 	// Handle update case
 	case "Update ContainDB":
 		fmt.Println("Checking for ContainDB updates...")
-		command := exec.Command("bash", "-c", "curl -fsSL https://raw.githubusercontent.com/nexoral/ContainDB/main/Scripts/installer.sh | sudo bash -")
-		command.Stdout = os.Stdout
-		command.Stderr = os.Stderr
-		if err := command.Run(); err != nil {
-			fmt.Println("Error updating ContainDB:", err)
+
+		installSource := os.Getenv("CONTAINDB_INSTALL_SOURCE")
+		if installSource == "npm" {
+			fmt.Println("Detected npm installation. Updating via npm...")
+			cmd := exec.Command("npm", "update", "-g", "containdb")
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+			if err := cmd.Run(); err != nil {
+				fmt.Println("Error updating via npm. Please try running: npm update -g containdb")
+				fmt.Printf("Details: %v\n", err)
+			} else {
+				fmt.Println("Successfully updated ContainDB via npm!")
+			}
 			return
+		}
+
+		// Fallback for non-npm installs
+		if runtime.GOOS == "linux" {
+			fmt.Println("Detected Linux system. Attempting update via installer script...")
+			// On Linux, use the installer script
+			command := exec.Command("bash", "-c", "curl -fsSL https://raw.githubusercontent.com/nexoral/ContainDB/main/Scripts/installer.sh | sudo bash -")
+			command.Stdout = os.Stdout
+			command.Stderr = os.Stderr
+			if err := command.Run(); err != nil {
+				fmt.Println("Error updating ContainDB:", err)
+				return
+			}
+			fmt.Println("Update script executed successfully.")
+		} else {
+			fmt.Println("⚠️  Automatic update is not supported for this installation method on this OS.")
+			fmt.Println("Please update manually:")
+			fmt.Println("  - If installed via binary: Download the latest release from https://github.com/nexoral/ContainDB/releases")
+			fmt.Println("  - If installed via other package managers: Check their specific update commands")
 		}
 
 	// Handle exit case
