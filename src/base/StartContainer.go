@@ -51,9 +51,23 @@ func StartContainer(database string) {
 		customPort := Docker.AskYesNo("Do you want to use custom host port?")
 		if customPort {
 			hostPort := tools.AskForInput("Enter custom host port", port)
+			// For axiodb, reject 27019 as it's needed internally
+			if database == "axiodb" && hostPort == "27019" {
+				fmt.Println("Port 27019 is reserved for internal use. Please choose a different port.")
+				hostPort = tools.AskForInput("Enter custom host port", port)
+			}
 			portMapping = fmt.Sprintf("-p %s:%s", hostPort, port)
 		} else {
 			portMapping = fmt.Sprintf("-p %s:%s", port, port)
+		}
+	}
+
+	// For axiodb, automatically add 27019:27019 mapping
+	if database == "axiodb" {
+		if portMapping != "" {
+			portMapping += " -p 27019:27019"
+		} else {
+			portMapping = "-p 27019:27019"
 		}
 	}
 
