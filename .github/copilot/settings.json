@@ -1,0 +1,87 @@
+{
+  "version": "1.0",
+  "description": "GitHub Copilot settings for ContainDB",
+
+  "project": {
+    "name": "ContainDB",
+    "type": "CLI Tool",
+    "language": "Go",
+    "runtime": "Go ≥1.18"
+  },
+
+  "build": {
+    "command": "go build -o containdb src/Core/main.go",
+    "required": true,
+    "runAfterChanges": true
+  },
+
+  "test": {
+    "command": "go test ./...",
+    "required": true
+  },
+
+  "codeStyle": {
+    "useGoFmt": true,
+    "useGoVet": true,
+    "errorHandling": "descriptive"
+  },
+
+  "instructions": [
+    "CRITICAL: Test on Linux, macOS, Windows before release",
+    "CRITICAL: Use Docker SDK, never execute docker commands directly",
+    "CRITICAL: Implement auto-rollback for all resource creation",
+    "CRITICAL: Never log or hardcode passwords",
+    "Use filepath package for cross-platform path handling",
+    "Prompt users for sensitive data interactively",
+    "Provide clear, actionable error messages with context",
+    "Validate all user inputs (ports, names, paths)",
+    "Update documentation when features change",
+    "Maintain backward compatibility for CLI interface"
+  ],
+
+  "patterns": {
+    "autoRollback": {
+      "description": "Cleanup resources on any error",
+      "required": true
+    },
+    "dockerSDK": {
+      "description": "Use official Docker SDK, not commands",
+      "required": true
+    },
+    "interactivePrompts": {
+      "description": "Prompt for sensitive data",
+      "required": true
+    },
+    "errorHandling": {
+      "description": "Descriptive errors with context",
+      "required": true
+    }
+  },
+
+  "security": [
+    "Never log passwords or sensitive data",
+    "Validate all user inputs",
+    "Warn about root/sudo requirements",
+    "No hardcoded secrets or credentials",
+    "Use Docker networks for container isolation"
+  ],
+
+  "antiPatterns": [
+    "Never use platform-specific code without fallbacks",
+    "Never hardcode credentials",
+    "Never execute docker commands directly",
+    "Never break CLI interface compatibility",
+    "Never skip cross-platform testing"
+  ],
+
+  "completionCriteria": {
+    "required": [
+      "go build passes",
+      "go test ./... passes",
+      "Works on Linux, macOS, Windows",
+      "Documentation updated",
+      "Backward compatible",
+      "Auto-rollback implemented"
+    ]
+  }
+}
