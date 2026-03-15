@@ -1,0 +1,68 @@
+# OpenAI Codex CLI Configuration for ContainDB
+
+[project]
+name = "ContainDB"
+description = "Database Container Management CLI Tool"
+language = "Go"
+runtime = "Go ≥1.18"
+
+[model]
+default = "gpt-4-turbo"
+temperature = 0.2
+max_tokens = 4096
+
+[approval]
+mode = "strict"
+ask_before_install = true
+ask_before_delete = true
+ask_before_build = true
+
+[build]
+command = "go build -o containdb src/Core/main.go"
+required = true
+run_after_changes = true
+
+[test]
+command = "go test ./..."
+required = true
+
+[style]
+use_go_fmt = true
+use_go_vet = true
+error_handling = "descriptive_with_context"
+
+[rules]
+cross_platform = true
+docker_sdk_only = true
+auto_rollback = true
+interactive_prompts = true
+no_hardcoded_secrets = true
+
+[security]
+validate_inputs = true
+no_log_passwords = true
+warn_root_required = true
+use_docker_networks = true
+
+[documentation]
+update_readme = true
+update_design = true
+update_installation = true
+update_changelog = true
+
+[antipatterns]
+no_platform_specific_without_fallback = true
+no_hardcoded_credentials = true
+no_docker_commands = true
+no_breaking_cli_changes = true
+no_incomplete_rollback = true
+
+[completion]
+required = [
+  "go build passes",
+  "go test ./... passes",
+  "Works on Linux, macOS, Windows",
+  "Documentation updated",
+  "Backward compatible",
+  "Auto-rollback implemented"
+]

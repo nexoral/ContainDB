@@ -1,0 +1,140 @@
+# ContainDB Core Rules for Cursor IDE
+
+## Project Context
+
+**ContainDB** is a CLI tool for managing containerized databases. Written in Go, cross-platform (Linux/macOS/Windows), distributed via npm and native binaries.
+
+## Mandatory Workflows
+
+### After EVERY Code Change
+```bash
+go build -o containdb src/Core/main.go
+go test ./...
+go fmt ./...
+go vet ./...
+```
+
+### For ANY Feature Change
+1. Test on Linux, macOS, Windows
+2. Update docs (README, DESIGN, INSTALLATION)
+3. Verify auto-rollback works
+4. Test error scenarios
+
+## Definition of "Done"
+
+- ✅ `go build` passes
+- ✅ `go test ./...` passes
+- ✅ Works on all platforms
+- ✅ Documentation updated
+- ✅ Backward compatible
+- ✅ Auto-rollback implemented
+- ✅ Clear error messages
+
+## Architecture
+
+### Layers
+```
+CLI (main.go) → Base Operations → Docker SDK → Docker Engine
+```
+
+### Structure
+```
+src/
+├── Core/main.go     # Entry point
+├── base/            # Logic (Create, Remove, Export, Import)
+├── Docker/          # SDK wrapper
+└── tools/           # Management tools
+```
+
+## Go Standards
+
+### Error Handling
+```go
+// ✅ REQUIRED
+if err != nil {
+    return fmt.Errorf("failed to create container '%s': %w", name, err)
+}
+
+// ❌ FORBIDDEN
+if err != nil {
+    return err
+}
+```
+
+### Type Safety
+```go
+// ✅ Use structs
+type ContainerOptions struct {
+    Name  string
+    Image string
+    Port  int
+}
+
+// ❌ Too many params
+func Create(name, image string, port int) error
+```
+
+## Key Patterns
+
+### Auto-Rollback (CRITICAL)
+```go
+created := []string{}
+defer func() {
+    if err != nil {
+        for _, id := range created {
+            cleanup(id)
+        }
+    }
+}()
+```
+
+### Docker SDK (NOT Commands)
+```go
+// ✅ Use SDK
+import "github.com/docker/docker/client"
+
+cli, err := client.NewClientWithOpts(client.FromEnv)
+
+// ❌ Don't execute commands
+exec.Command("docker", "run", ...)
+```
+
+### Interactive Prompts
+```go
+// ✅ Prompt for passwords
+password := promptSecure("Enter password:")
+
+// ❌ No hardcoded defaults
+password := "password123"
+```
+
+## Security
+
+- Never log passwords
+- Validate all inputs (ports, names)
+- Warn about root requirements
+- Use Docker networks for isolation
+
+## Testing
+
+- Unit tests for core logic
+- Integration tests for CLI
+- Test on Linux, macOS, Windows
+- Test error scenarios
+
+## Anti-Patterns (FORBIDDEN)
+
+❌ Platform-specific code without fallbacks
+❌ Hardcoded credentials
+❌ Direct docker commands
+❌ Breaking CLI interface
+❌ Missing error handling
+❌ Incomplete rollback
+
+## Success Criteria
+
+- ✅ Builds successfully
+- ✅ Tests pass
+- ✅ Works cross-platform
+- ✅ Docs updated
+- ✅ Backward compatible
