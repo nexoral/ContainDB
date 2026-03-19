@@ -183,7 +183,12 @@ func getContainerInfo(containerName string) (ContainerInfo, error) {
 			for _, env := range envVars {
 				if strings.HasPrefix(env, "PMA_HOST=") ||
 					strings.HasPrefix(env, "PMA_PORT=") ||
-					strings.HasPrefix(env, "PMA_USER=") {
+					strings.HasPrefix(env, "PMA_USER=") ||
+					strings.HasPrefix(env, "PMA_PASSWORD=") ||
+					strings.HasPrefix(env, "PMA_DATABASE=") ||
+					strings.HasPrefix(env, "PMA_ARBITRARY=") ||
+					strings.HasPrefix(env, "PMA_SSL=") ||
+					strings.HasPrefix(env, "PMA_SSL_VERIFY=") {
 					filteredEnvVars = append(filteredEnvVars, env)
 				}
 			}
