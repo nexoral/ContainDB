@@ -1,0 +1,12 @@
+
+# Ignore common development files
+node_modules/
+.DS_Store
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.git/
+.gitignore
+
+# We explicitly want to include everything else in this folder
