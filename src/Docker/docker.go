@@ -68,8 +68,17 @@ func RemoveDatabase(name string) error {
 func ListDatabaseImages() ([]string, error) {
 	// List of common database images used by ContainDB
 	dbImages := []string{
-		"mongo", "mysql", "postgres", "redis",
-		"mariadb", "phpmyadmin", "dpage/pgadmin4",
+		// Core databases
+		"mongo", "mysql", "postgres", "redis", "mariadb",
+		// Management tools (core)
+		"phpmyadmin", "dpage/pgadmin4", "redis/redisinsight",
+		// Vector databases
+		"qdrant/qdrant", "cr.weaviate.io/semitechnologies/weaviate",
+		"milvusdb/milvus", "chromadb/chroma", "pgvector/pgvector",
+		"redis/redis-stack", "elasticsearch", "opensearchproject/opensearch",
+		"marqoai/marqo", "vespaengine/vespa", "typesense/typesense",
+		// Management tools (vector DBs)
+		"zilliz/attu", "kibana", "opensearchproject/opensearch-dashboards",
 	}
 
 	// Build docker command to list images
@@ -134,8 +143,12 @@ func RemoveImage(image string) error {
 func ListContainDBVolumes() ([]string, error) {
 	// Common volume prefixes used by ContainDB
 	prefixes := []string{
-		"mongodb-data", "mysql-data", "postgresql-data", "redis-data",
-		"mariadb-data",
+		// Core databases
+		"mongodb-data", "mysql-data", "postgresql-data", "redis-data", "mariadb-data",
+		// Vector databases
+		"qdrant-data", "weaviate-data", "milvus-data", "chroma-data", "pgvector-data",
+		"redis-stack-data", "elasticsearch-data", "opensearch-data",
+		"vespa-data", "typesense-data",
 	}
 
 	cmd := exec.Command("docker", "volume", "ls", "--format", "{{.Name}}")

@@ -16,7 +16,7 @@ func DownloadMongoDBCompass() {
 	if runtime.GOOS != "linux" {
 		fmt.Println("⚠️  MongoDB Compass GUI installation is currently only supported on Linux.")
 		fmt.Println("Please download MongoDB Compass manually for your platform:")
-		
+
 		switch runtime.GOOS {
 		case "windows":
 			fmt.Println("Windows: Download from https://www.mongodb.com/try/download/compass")
@@ -27,7 +27,7 @@ func DownloadMongoDBCompass() {
 	}
 
 	fmt.Println("Downloading MongoDB Compass...")
-	
+
 	downloadURL := "https://downloads.mongodb.com/compass/mongodb-compass_1.46.2_amd64.deb"
 	tempDir := Docker.GetTempDir()
 	debPath := filepath.Join(tempDir, "mongodb-compass.deb")

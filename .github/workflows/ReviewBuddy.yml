@@ -15,3 +15,4 @@ jobs:
       - uses: nexoral/ReviewBuddy@main
         with:
           gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+          model: ${{ secrets.MODEL }}

@@ -128,7 +128,7 @@ func checkDiskSpace(minGB float64) error {
 		if err != nil {
 			return fmt.Errorf("failed to check disk space: %v", err)
 		}
-		
+
 		lines := strings.Split(string(output), "\n")
 		// PowerShell output might be "Free\n-----\n123456789\n" or just the number depending on version/formatting
 		// We look for the first valid number
@@ -160,7 +160,7 @@ func checkDiskSpace(minGB float64) error {
 				// Linux: Filesystem 1k-blocks Used Available Use% Mounted on
 				// macOS: Filesystem 1024-blocks Used Available Capacity Mounted on
 				// Sometimes strict POSIX might vary but usually Available is 4th.
-				
+
 				// Check which field matches numbers
 				idx := 3 // 0-indexed, so 4th field
 				if val, err := strconv.ParseFloat(fields[idx], 64); err == nil {
@@ -173,7 +173,7 @@ func checkDiskSpace(minGB float64) error {
 
 	if freeGB == 0 {
 		fmt.Println("Warning: Could not detect free disk space, skipping check.")
-		return nil 
+		return nil
 	}
 
 	if freeGB < minGB {
