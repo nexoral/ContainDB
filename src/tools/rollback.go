@@ -12,10 +12,10 @@ import (
 // Cleanup stops and removes any created containers and temporary artifacts.
 func Cleanup() {
 	fmt.Println("🧹 Cleaning up resources...")
-	
+
 	// remove exited/dead containers - get list first, then remove
 	fmt.Println("- Removing failed containers...")
-	
+
 	statuses := []string{"exited", "dead", "created"}
 	for _, status := range statuses {
 		// Get containers with the specific status
@@ -31,7 +31,7 @@ func Cleanup() {
 			}
 		}
 	}
-	
+
 	// remove dangling images
 	fmt.Println("- Removing dangling images...")
 	exec.Command("docker", "image", "prune", "-f").Run()

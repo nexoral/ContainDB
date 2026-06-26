@@ -36,6 +36,12 @@ func BaseCaseHandler() {
 			tools.StartPgAdmin()
 		case "Redis Insight":
 			tools.StartRedisInsight()
+		case "Attu":
+			tools.StartAttu()
+		case "Kibana":
+			tools.StartKibana()
+		case "OpenSearch Dashboards":
+			tools.StartOpenSearchDashboards()
 		default:
 			StartContainer(database)
 		}
@@ -43,19 +49,19 @@ func BaseCaseHandler() {
 	case "List Databases":
 		names, err := Docker.ListRunningDatabases()
 
-		// Remove PgAdmin, phpmyadmin if it exists from the list
-		for i, name := range names {
-			if name == "phpmyadmin" {
-				names = append(names[:i], names[i+1:]...)
-				break
-			} else if name == "pgadmin" {
-				names = append(names[:i], names[i+1:]...)
-				break
-			} else if name == "redisinsight" {
-				names = append(names[:i], names[i+1:]...)
-				break
+		// Filter out management tool containers — show only database containers
+		toolContainers := map[string]bool{
+			"phpmyadmin": true, "pgadmin": true, "redisinsight": true,
+			"attu-container": true, "kibana-container": true,
+			"opensearch-dashboards-container": true,
+		}
+		var filtered []string
+		for _, name := range names {
+			if !toolContainers[name] {
+				filtered = append(filtered, name)
 			}
 		}
+		names = filtered
 		if err != nil {
 			fmt.Println("Error listing databases:", err)
 			return

@@ -62,7 +62,7 @@ func GetOSName() string {
 func CheckOSSupport() error {
 	osName := GetOSName()
 	fmt.Printf("Detected OS: %s\n", osName)
-	
+
 	switch runtime.GOOS {
 	case "windows", "darwin", "linux":
 		return nil
@@ -76,7 +76,7 @@ func GetOSRelease() string {
 	if runtime.GOOS != "linux" {
 		return ""
 	}
-	
+
 	releaseBytes, err := os.ReadFile("/etc/os-release")
 	if err != nil {
 		return ""

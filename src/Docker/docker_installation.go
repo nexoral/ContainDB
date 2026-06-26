@@ -15,7 +15,7 @@ func IsDockerInstalled() bool {
 
 func InstallDocker() error {
 	fmt.Printf("Docker not found. Installing Docker on %s...\n", GetOSName())
-	
+
 	switch runtime.GOOS {
 	case "linux":
 		return installDockerLinux()
@@ -69,13 +69,13 @@ func installDockerWindows() error {
 	fmt.Println("  choco install docker-desktop")
 	fmt.Println("\nOr use winget (Windows 10/11):")
 	fmt.Println("  winget install Docker.DockerDesktop")
-	
+
 	return fmt.Errorf("automatic installation not supported on Windows. Please install manually using the instructions above")
 }
 
 func installDockerMacOS() error {
 	fmt.Println("Installing Docker on macOS...")
-	
+
 	// Check if Homebrew is available
 	if _, err := exec.LookPath("brew"); err == nil {
 		fmt.Println("Using Homebrew to install Docker...")
@@ -93,17 +93,17 @@ func installDockerMacOS() error {
 		}
 		fmt.Println("Docker installed successfully via Homebrew!")
 		fmt.Println("Please launch Docker Desktop from Applications and wait for it to start.")
-		
+
 		// Even with brew install, user often needs to start the app manually to initialize the engine
 		// We return error to prompt restart/manual launch verification unless we can verify it's running.
 		// However, brew install is "technically" an install.
-		// But for safety and consistency with the user request "for other give error that download docker" 
-		// (though Mac brew is auto, maybe they consider brew auto enough? 
+		// But for safety and consistency with the user request "for other give error that download docker"
+		// (though Mac brew is auto, maybe they consider brew auto enough?
 		// The prompt said "for other give error that download docker". "other" implies non-Linux.
 		// But Mac often uses Brew. I'll assume if Brew works, it's auto. If not, error.
 		return nil
 	}
-	
+
 	// No Homebrew, provide manual instructions
 	fmt.Println("⚠️  Homebrew not found. Please install Docker Desktop manually:")
 	fmt.Println("1. Download Docker Desktop from: https://www.docker.com/products/docker-desktop/")
@@ -113,13 +113,13 @@ func installDockerMacOS() error {
 	fmt.Println("\nAlternatively, install Homebrew first:")
 	fmt.Println("  /bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"")
 	fmt.Println("Then run: brew install --cask docker")
-	
+
 	return fmt.Errorf("automatic installation not supported without Homebrew. Please install manually using the instructions above")
 }
 
 func UninstallDocker() error {
 	fmt.Printf("Uninstalling Docker on %s...\n", GetOSName())
-	
+
 	switch runtime.GOOS {
 	case "linux":
 		return uninstallDockerLinux()
@@ -171,7 +171,7 @@ func uninstallDockerWindows() error {
 
 func uninstallDockerMacOS() error {
 	fmt.Println("Uninstalling Docker on macOS...")
-	
+
 	// Check if installed via Homebrew
 	if _, err := exec.LookPath("brew"); err == nil {
 		fmt.Println("Attempting to uninstall via Homebrew...")
@@ -182,7 +182,7 @@ func uninstallDockerMacOS() error {
 			fmt.Println("Docker may not have been installed via Homebrew, or already uninstalled.")
 		}
 	}
-	
+
 	fmt.Println("Please also manually remove Docker Desktop if it exists:")
 	fmt.Println("1. Quit Docker Desktop if running")
 	fmt.Println("2. Remove from Applications: /Applications/Docker.app")

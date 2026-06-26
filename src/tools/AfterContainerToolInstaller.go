@@ -58,6 +58,37 @@ func AfterContainerToolInstaller(database string) {
 		} else {
 			fmt.Println("You can install Redis Insight later using the 'redis insight' option.")
 		}
+
+	// Vector database tool suggestions
+	case "milvus":
+		if Docker.AskYesNo("Do you want to install Attu (Milvus Web UI)?") {
+			StartAttu()
+		} else {
+			fmt.Println("You can install Attu later using the 'Attu' option.")
+		}
+	case "elasticsearch":
+		if Docker.AskYesNo("Do you want to install Kibana?") {
+			StartKibana()
+		} else {
+			fmt.Println("You can install Kibana later using the 'Kibana' option.")
+		}
+	case "opensearch":
+		if Docker.AskYesNo("Do you want to install OpenSearch Dashboards?") {
+			StartOpenSearchDashboards()
+		} else {
+			fmt.Println("You can install OpenSearch Dashboards later using the 'OpenSearch Dashboards' option.")
+		}
+	case "pgvector":
+		if Docker.AskYesNo("Do you want to install PgAdmin?") {
+			StartPgAdmin()
+		} else {
+			fmt.Println("You can install PgAdmin later using the 'PgAdmin' option.")
+		}
+	case "qdrant":
+		fmt.Println("Qdrant Web UI is built-in — access it at http://localhost:6333/dashboard")
+	case "redis-stack":
+		fmt.Println("RedisInsight is built-in in Redis Stack — access it at http://localhost:8001")
+
 	default:
 		fmt.Println("No additional tools available for this database type.")
 	}
