@@ -1,5 +1,5 @@
 ---
-name: containdb-development
+name: containdb
 description: Development rules and patterns for ContainDB CLI tool
 version: 1.0.0
 tags: [golang, docker, cli, cross-platform, containers]
