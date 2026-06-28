@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	VERSION := "9.20.46-stable"
+	VERSION := "9.20.47-stable"
 
 	// handle version flag without requiring sudo
 	if len(os.Args) > 1 && os.Args[1] == "--version" {
